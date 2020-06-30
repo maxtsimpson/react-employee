@@ -1,13 +1,10 @@
 // Require Mongoose
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 const EmployeeSchema = require('./employee')
-
-// Define a schema
-const Schema = mongoose.Schema
 
 // excercises should be an array of excercise schemas
 
-const DepartmentSchema = new Schema({
+const DepartmentSchema = new mongoose.Schema({
     departmentName: String,
     employees: [EmployeeSchema]
 })
