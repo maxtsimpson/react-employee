@@ -10,7 +10,7 @@ export function generateEmployees(numberOfEmployees = 20) {
             firstName: faker.name.firstName(),
             lastName: faker.name.lastName(),
             role: faker.name.jobTitle(),
-            picture: faker.image.people()
+            picture: faker.image.avatar()
         }
         employeeList.push(employee)
     }
