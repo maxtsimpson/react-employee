@@ -12,9 +12,11 @@
     "@testing-library/user-event": "^7.2.1",
     "faker": "^4.1.0",
     "lodash": "^4.17.15",
+    "materialize-css": "^1.0.0",
     "react": "^16.13.1",
     "react-data-grid": "^7.0.0-canary.16",
     "react-dom": "^16.13.1",
+    "react-materialize": "^3.9.2",
     "react-scripts": "3.4.1",
     "react-table-filter": "^2.0.1",
     "uuidv4": "^6.1.1"

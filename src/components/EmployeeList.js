@@ -1,4 +1,5 @@
 import React, {useReducer,useState} from "react";
+import {Table, Input, Button} from 'react-materialize'
 import _ from 'lodash';
 // import TableFilter from 'react-table-filter';
 
@@ -35,15 +36,18 @@ function EmployeeList({ employees }) {
     }, employees);
 
     return (
-        <table className="m-table">
+        <Table striped={true}>
             <thead>
                 <tr>
                     <th onClick={() => dispatch('firstName')}>FirstName
-                        <input type="text" onKeyUp={(event) => {setFilter({prop: "firstName",value: event.target.value})}} placeholder="filter by names.."></input>
+                        <input type="text" onKeyUp={(event) => {setFilter({prop: "firstName",value: event.target.value})}} placeholder="filter by first name.."></input>
                     </th>
-                    
-                    <th onClick={() => dispatch('lastName')}>LastName</th>
-                    <th onClick={() => dispatch('role')}>Role</th>
+                    <th onClick={() => dispatch('lastName')}>LastName
+                        <input type="text" onKeyUp={(event) => {setFilter({prop: "lastName",value: event.target.value})}} placeholder="filter by last name.."></input>
+                    </th>
+                    <th onClick={() => dispatch('role')}>Role
+                        <input type="text" onKeyUp={(event) => {setFilter({prop: "role",value: event.target.value})}} placeholder="filter by role.."></input>
+                    </th>
                     <th>Picture</th>
                 </tr>
             </thead>
@@ -53,7 +57,7 @@ function EmployeeList({ employees }) {
                     console.log(filter)
                     if (filter){
                         //use a starts with but make sure they are both converted to lowercase
-                        if (filter.value !== employee[filter.prop] && filter.value !== "") {
+                        if ((!employee[filter.prop].startsWith(filter.value)) && filter.value !== "") {
                             return
                         }
                     }
@@ -69,7 +73,7 @@ function EmployeeList({ employees }) {
                     );
                 })}
             </tbody>
-        </table>
+        </Table>
     )
 }
 
