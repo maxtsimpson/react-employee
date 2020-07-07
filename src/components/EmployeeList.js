@@ -7,7 +7,7 @@ let currentSortProp = "";
 let sortAsc = true
 
 function EmployeeList({ employees }) {
-
+    console.log({ employees })
     // const [employeeList, setEmployeeList] = useState();
 
     //need to make a function that sets the employeeState to an incoming array
@@ -23,7 +23,9 @@ function EmployeeList({ employees }) {
 
     const initialEmployeeState = employees.map((employee) => { return { ...employee, show: true } })
 
-    console.log({initialEmployeeState})
+    // const clearSearchFunction = () => {
+    //     employeeList = initialEmployeeState.map(employee => employee)
+    // }
 
     const searchEmployees = (state, searchTerm) => {
         console.log("in searchEmployees")
@@ -43,21 +45,16 @@ function EmployeeList({ employees }) {
         //if the filter value matches this employees value dont show it
         //use a starts with but make sure they are both converted to lowercase
         if (filter.filterText === "") {
-            return state.map(employee => employee);
-        }
-
-        if ((filter.filterText) && (filter.filterText !== "")) {
+            return initialEmployeeState.map(employee => employee)
+        } else {
             return state.map(employee => {
                 const currentValue = employee[filter.filterProp].toString().toLowerCase()
-                console.log(currentValue)
                 if (currentValue.startsWith(filter.filterText.toLowerCase())) {
                     return { ...employee, show: true }
                 } else {
                     return { ...employee, show: false }
                 }
             })
-        } else {
-            return state.map(employee => employee);
         }
     }
 
@@ -72,7 +69,7 @@ function EmployeeList({ employees }) {
         return _.orderBy(state.map(x => x), property, sortOrder); // Use Lodash to sort array by 'name'   
     }
 
-    const [employeeList, dispatch] = useReducer((state, action) => {
+    let [employeeList, dispatch] = useReducer((state, action) => {
         //by default sort ascending unless they have already clicked to sort
         //in which case sort desc
         console.log("in useReducer")
@@ -87,13 +84,20 @@ function EmployeeList({ employees }) {
             case 'search':
                 returnValue = searchEmployees(state, action.value)
                 break;
+            case 'clear':
+                returnValue = initialEmployeeState.map(employee => employee)
+                break;
             default:
-                returnValue = state
+                returnValue = initialEmployeeState.map(employee => employee)
                 break;
         }
-        console.log({returnValue})
+        console.log({ returnValue })
         return returnValue
     }, initialEmployeeState);
+
+    // const clearFilter = () => {
+    //     dispatch({type: 'clear'})
+    // }
     //employees.map((employee) => {return {...employee, show: true}})
 
     return (
@@ -101,20 +105,27 @@ function EmployeeList({ employees }) {
             <form>
                 <div className="inline">
                     <input type="text" placeholder="Enter something to search.."></input>
-                    <button className="btn" onClick={(event) => { dispatch({ type: "firstName", value: event.target.value })}}>Search</button>
+                    <button className="btn" onClick={(event) => {
+                        event.preventDefault()
+                        dispatch({ type: "firstName", value: event.target.value })
+                    }}>Search</button>
+                    <button className="btn" onClick={(event) => {
+                        event.preventDefault()
+                        dispatch({ type: "clear" })
+                    }}>Clear Search</button>
                 </div>
             </form>
             <Table striped={true}>
                 <thead>
                     <tr>
                         <th><span onClick={() => dispatch({ type: 'sort', value: 'firstName' })}>FirstName</span>
-                            <input type="text" onKeyUp={(event) => { dispatch({ type: 'filter', value: { filterProp: "firstName",filterText: event.target.value} }) }} placeholder="filter by first name.."></input>
+                            <input type="text" onKeyUp={(event) => { dispatch({ type: 'filter', value: { filterProp: "firstName", filterText: event.target.value } }) }} placeholder="filter by first name.."></input>
                         </th>
                         <th><span onClick={() => dispatch({ type: 'sort', value: 'lastName' })}>LastName</span>
-                            <input type="text" onKeyUp={(event) => { dispatch({ type: 'filter', value: { filterProp: "lastName",filterText: event.target.value} }) }} placeholder="filter by last name.."></input>
+                            <input type="text" onKeyUp={(event) => { dispatch({ type: 'filter', value: { filterProp: "lastName", filterText: event.target.value } }) }} placeholder="filter by last name.."></input>
                         </th>
                         <th><span onClick={() => dispatch({ type: 'sort', value: 'role' })}>Role</span>
-                            <input type="text" onKeyUp={(event) => { dispatch({ type: 'filter', value: { filterProp: "role",filterText: event.target.value} }) }} placeholder="filter by role.."></input>
+                            <input type="text" onKeyUp={(event) => { dispatch({ type: 'filter', value: { filterProp: "role", filterText: event.target.value } }) }} placeholder="filter by role.."></input>
                         </th>
                         <th>Picture</th>
                     </tr>

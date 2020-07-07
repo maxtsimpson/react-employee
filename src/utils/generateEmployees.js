@@ -1,8 +1,8 @@
-import { uuid } from 'uuidv4';
+const { uuid } = require('uuidv4');
+// const fs = require('fs').promises
 const faker = require('faker')
 
-
-export function generateEmployees(numberOfEmployees = 20) {
+const generateEmployees = (numberOfEmployees = 20) => {
     const employeeList = []
     for (let index = 0; index < numberOfEmployees; index++) {
         const employee = {
@@ -14,7 +14,17 @@ export function generateEmployees(numberOfEmployees = 20) {
         }
         employeeList.push(employee)
     }
+    console.log("returning employeeList")
+    console.log({employeeList})
     return employeeList
 }
 
-// export default generateEmployees
+// const json = JSON.stringify(generateEmployees());
+
+// const writeEmployees = async () => {
+//     return await fs.writeFile('./src/utils/employees.json', json, 'utf8')
+// }
+
+// writeEmployees();
+
+export default generateEmployees

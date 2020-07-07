@@ -1,18 +1,27 @@
-import React from "react";
+import React, { useEffect,useState } from "react";
 import "./App.css";
 import EmployeeList from "./components/EmployeeList"
-import { generateEmployees } from "./utils/generateEmployees";
+// import { getEmployees } from "./utils/getEmployees";
+import generateEmployees from "./utils/generateEmployees";
 import Jumbotron from "./components/jumbotron"
+
+
+// console.log(employees)
+// let employeeList = [];
 
 function App() {
 
-  const employees = generateEmployees();
+  const [employeeArray,setEmployees] = useState([]);
+
+  useEffect(() => {
+    const employees = generateEmployees()
+    setEmployees(employees);
+  }, []);
 
   return (
     <div className="container text-center">
-        {/* <h4>My Employee List:</h4> */}
         <Jumbotron></Jumbotron>
-        <EmployeeList employees={employees}/>
+        <EmployeeList employees={employeeArray}/>
     </div>
   );
 }
