@@ -1,13 +1,8 @@
 import React, { useEffect,useState } from "react";
 import "./App.css";
 import EmployeeList from "./components/EmployeeList"
-// import { getEmployees } from "./utils/getEmployees";
 import generateEmployees from "./utils/generateEmployees";
 import Jumbotron from "./components/jumbotron"
-
-
-// console.log(employees)
-// let employeeList = [];
 
 function App() {
 

@@ -1,5 +1,4 @@
 const { uuid } = require('uuidv4');
-// const fs = require('fs').promises
 const faker = require('faker')
 
 const generateEmployees = (numberOfEmployees = 20) => {

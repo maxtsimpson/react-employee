@@ -1,16 +1,11 @@
-import React, { useReducer, useRef, useState, useEffect } from "react";
+import React, { useReducer, useRef, useEffect } from "react";
 import { Table } from 'react-materialize'
 import _ from 'lodash';
-// import SearchBox from "./SearchBox";s
 
 let currentSortProp = "";
 let sortAsc = true
 
 function EmployeeList({ employees }) {
-
-    //put in a currentemployeeState
-    // a clear search function -- that sets currentemployeeState back to the original employee list
-    // a clear filter function
 
     const searchInputEl = useRef(null);
 
