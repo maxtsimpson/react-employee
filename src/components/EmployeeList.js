@@ -1,4 +1,4 @@
-import React, { useReducer, useRef, useState } from "react";
+import React, { useReducer, useRef, useState, useEffect } from "react";
 import { Table } from 'react-materialize'
 import _ from 'lodash';
 // import SearchBox from "./SearchBox";s
@@ -73,7 +73,7 @@ function EmployeeList({ employees }) {
     const [employeeState, dispatch] = useReducer((state, action) => {
         //by default sort ascending unless they have already clicked to sort
         //in which case sort desc
-        console.log("running dispatch")
+        console.log("running reducer")
         switch (action.type) {
             case 'sort':
                 return sortEmployees(state, action.value)
@@ -88,6 +88,11 @@ function EmployeeList({ employees }) {
         }
     }, initialEmployeeState );
 
+    //i shouldnt need to do this but theres some bug
+    useEffect(() => {
+        dispatch({type: 'clear'})
+    })
+    
     console.log("just before render")
     console.log({employeeState})
 
