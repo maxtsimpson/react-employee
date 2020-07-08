@@ -15,21 +15,24 @@ function EmployeeList({ employees }) {
     const searchInputEl = useRef(null);
 
     const searchEmployees = (state, searchTerm) => {
-        console.log(`in searchEmployees. searchTerm: ${searchTerm}`)
         searchTerm = searchTerm.toLowerCase()
 
-        return state.map((employee) => {
-            Object.keys(employees[0]).forEach(prop => {
+        let newEmployees = state.map((employee) => {
+            let newEmployee
+            const props = Object.keys(employees[0])
+            for (let index = 0; index < props.length; index++) {
+                const prop = props[index];
                 const propString = employee[prop].toString().toLowerCase()
-                console.log(`propString: ${propString}`)
-                if (employee[prop].toString().toLowerCase().startsWith(searchTerm)) {
-                    return { ...employee, show: true }
+                if (propString.startsWith(searchTerm)) {
+                    newEmployee = { ...employee, show: true }
+                    return newEmployee
                 } else {
-                    employee = { ...employee, show: false }
+                    newEmployee = { ...employee, show: false }
                 }
-            })
-            return employee
+            }
+            return newEmployee
         })
+        return newEmployees
     };
 
     const filterEmployees = (state, filter) => {
@@ -67,13 +70,9 @@ function EmployeeList({ employees }) {
 
     const initialEmployeeState = employees.map((employee) => { return { ...employee, show: true } })
 
-    console.log("just before reducer")
-    console.log({initialEmployeeState})
-
     const [employeeState, dispatch] = useReducer((state, action) => {
         //by default sort ascending unless they have already clicked to sort
         //in which case sort desc
-        console.log("running reducer")
         switch (action.type) {
             case 'sort':
                 return sortEmployees(state, action.value)
@@ -91,11 +90,8 @@ function EmployeeList({ employees }) {
     //i shouldnt need to do this but theres some bug
     useEffect(() => {
         dispatch({type: 'clear'})
-    })
+    }, [] )
     
-    console.log("just before render")
-    console.log({employeeState})
-
     return (
         <div>
             <form>
@@ -103,8 +99,6 @@ function EmployeeList({ employees }) {
                     <input ref={searchInputEl} type="text" placeholder="Enter something to search.."></input>
                     <button className="btn" onClick={(event) => {
                         event.preventDefault()
-                        console.log("search")
-                        console.log({event})
                         dispatch({ type: "search", value: searchInputEl.current.value })
 
                     }}>Search</button>
@@ -133,7 +127,6 @@ function EmployeeList({ employees }) {
                 <tbody>
                     {employeeState.map(function (employee, index) {
                         if (employee.show) {
-                            console.log(`employee ${employee.firstName} ${employee.lastName} should show`)
                             return (
                                 <tr key={employee.id}>
                                     <td>{employee.firstName}</td>
@@ -145,7 +138,6 @@ function EmployeeList({ employees }) {
                                 </tr>
                             );
                         } else {
-                            console.log(`employee ${employee.firstName} ${employee.lastName} has show false ${employee.show}`)
                             return null
                         }
                     })}
