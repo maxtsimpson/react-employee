@@ -1,40 +1,31 @@
-import React, { useReducer, useState } from "react";
+import React, { useReducer, useRef, useState } from "react";
 import { Table } from 'react-materialize'
 import _ from 'lodash';
-import SearchBox from "./SearchBox";
+// import SearchBox from "./SearchBox";s
 
 let currentSortProp = "";
 let sortAsc = true
 
 function EmployeeList({ employees }) {
-    console.log({ employees })
-    // const [employeeList, setEmployeeList] = useState();
 
-    //need to make a function that sets the employeeState to an incoming array
-    //then edit all the functions so they just call this with the array they want to replace it with
-    //check the activities. im sure we've just done this
-
-    // const [filter, setFilter] = useState();
-
-    //put in a currentEmployeelist
-    // a clear search function -- that sets currentEmployeeList back to the original employee list
+    //put in a currentemployeeState
+    // a clear search function -- that sets currentemployeeState back to the original employee list
     // a clear filter function
-    //also set it so that it doesnt generate a new employee list every time
 
-    const initialEmployeeState = employees.map((employee) => { return { ...employee, show: true } })
-
-    // const clearSearchFunction = () => {
-    //     employeeList = initialEmployeeState.map(employee => employee)
-    // }
+    const searchInputEl = useRef(null);
 
     const searchEmployees = (state, searchTerm) => {
-        console.log("in searchEmployees")
+        console.log(`in searchEmployees. searchTerm: ${searchTerm}`)
+        searchTerm = searchTerm.toLowerCase()
+
         return state.map((employee) => {
             Object.keys(employees[0]).forEach(prop => {
-                if (employee[prop].toString().startsWith(searchTerm)) {
+                const propString = employee[prop].toString().toLowerCase()
+                console.log(`propString: ${propString}`)
+                if (employee[prop].toString().toLowerCase().startsWith(searchTerm)) {
                     return { ...employee, show: true }
                 } else {
-                    return { ...employee, show: false }
+                    employee = { ...employee, show: false }
                 }
             })
             return employee
@@ -69,50 +60,54 @@ function EmployeeList({ employees }) {
         return _.orderBy(state.map(x => x), property, sortOrder); // Use Lodash to sort array by 'name'   
     }
 
-    let [employeeList, dispatch] = useReducer((state, action) => {
+    const clear = () => {
+        searchInputEl.current.value = ""
+        return initialEmployeeState.map(employee => employee)
+    }
+
+    const initialEmployeeState = employees.map((employee) => { return { ...employee, show: true } })
+
+    console.log("just before reducer")
+    console.log({initialEmployeeState})
+
+    const [employeeState, dispatch] = useReducer((state, action) => {
         //by default sort ascending unless they have already clicked to sort
         //in which case sort desc
-        console.log("in useReducer")
-        let returnValue
+        console.log("running dispatch")
         switch (action.type) {
             case 'sort':
-                returnValue = sortEmployees(state, action.value)
-                break;
+                return sortEmployees(state, action.value)
             case 'filter':
-                returnValue = filterEmployees(state, action.value)
-                break;
+                return filterEmployees(state, action.value)
             case 'search':
-                returnValue = searchEmployees(state, action.value)
-                break;
+                return searchEmployees(state, action.value)
             case 'clear':
-                returnValue = initialEmployeeState.map(employee => employee)
-                break;
+                return clear()
             default:
-                returnValue = initialEmployeeState.map(employee => employee)
-                break;
+                return initialEmployeeState.map(employee => employee)
         }
-        console.log({ returnValue })
-        return returnValue
-    }, initialEmployeeState);
+    }, initialEmployeeState );
 
-    // const clearFilter = () => {
-    //     dispatch({type: 'clear'})
-    // }
-    //employees.map((employee) => {return {...employee, show: true}})
+    console.log("just before render")
+    console.log({employeeState})
 
     return (
         <div>
             <form>
                 <div className="inline">
-                    <input type="text" placeholder="Enter something to search.."></input>
+                    <input ref={searchInputEl} type="text" placeholder="Enter something to search.."></input>
                     <button className="btn" onClick={(event) => {
                         event.preventDefault()
-                        dispatch({ type: "firstName", value: event.target.value })
+                        console.log("search")
+                        console.log({event})
+                        dispatch({ type: "search", value: searchInputEl.current.value })
+
                     }}>Search</button>
-                    <button className="btn" onClick={(event) => {
-                        event.preventDefault()
-                        dispatch({ type: "clear" })
-                    }}>Clear Search</button>
+                    <button className="btn"
+                        onClick={(event) => {
+                            event.preventDefault()
+                            dispatch({ type: "clear" })
+                        }}>Clear Search</button>
                 </div>
             </form>
             <Table striped={true}>
@@ -131,9 +126,9 @@ function EmployeeList({ employees }) {
                     </tr>
                 </thead>
                 <tbody>
-                    {employeeList.map(function (employee, index) {
-                        //if the filter value matches this employees value dont show it
+                    {employeeState.map(function (employee, index) {
                         if (employee.show) {
+                            console.log(`employee ${employee.firstName} ${employee.lastName} should show`)
                             return (
                                 <tr key={employee.id}>
                                     <td>{employee.firstName}</td>
@@ -145,6 +140,7 @@ function EmployeeList({ employees }) {
                                 </tr>
                             );
                         } else {
+                            console.log(`employee ${employee.firstName} ${employee.lastName} has show false ${employee.show}`)
                             return null
                         }
                     })}
